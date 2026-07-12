@@ -673,6 +673,7 @@
 </div>
 
 <script>
+  const SERVERCHAN_KEY = 'SCT378163TnIFd4bCwipYhTrXIWCS9wtyg';
   let currentPage = 0;
   let selectedDate = null;
   let selectedTime = null;
@@ -781,12 +782,36 @@
     document.getElementById('receiptDate').textContent = '2026-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
   }
 
-  function submitResult() {
+  async function submitResult() {
+    if (!selectedDate || !selectedTime || !selectedFood) {
+      alert('请先完成前面的选择');
+      return;
+    }
+
     const btn = document.getElementById('confirmBtn');
-    btn.textContent = '已发送 ✓';
+    btn.textContent = '发送中...';
     btn.disabled = true;
-    spawnHearts();
-    alert('约饭邀请已发送！');
+
+    const food = selectedFood === 'other' ? customFood : selectedFood;
+    const dateStr = (selectedDate.getMonth() + 1) + '月' + selectedDate.getDate() + '日';
+    const title = encodeURIComponent('有人接受了你的约饭邀请！');
+    const desp = encodeURIComponent('日期：' + dateStr + '\n时间：' + selectedTime + '\n吃什么：' + food + '\n来自 Eat With Me');
+
+    try {
+      const response = await fetch('https://sctapi.ftqq.com/' + SERVERCHAN_KEY + '.send?title=' + title + '&desp=' + desp);
+      const data = await response.json();
+      if (data.code === 0 || data.code === 200 || data.data) {
+        btn.textContent = '已发送 ✓';
+        spawnHearts();
+        alert('约饭邀请已发送！去微信查看通知吧～');
+      } else {
+        throw new Error(data.msg || '发送失败');
+      }
+    } catch (err) {
+      alert('发送失败：' + err.message + '\n请检查网络');
+      btn.textContent = '确认约饭';
+      btn.disabled = false;
+    }
   }
 
   function spawnHearts() {
