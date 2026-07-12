@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="description" content="JiYi 邀请你一起吃饭！">
+<title>Eat With Me - JiYi 的约饭邀请</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: "MS Sans Serif", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #c0c0c0;
+    background-image:
+      linear-gradient(45deg, #b8b8b8 25%, transparent 25%),
+      linear-gradient(-45deg, #b8b8b8 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #b8c0c0 75%),
+      linear-gradient(-45deg, transparent 75%, #b8b8b8 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  @keyframes rainbow {
+    0% { color: #ff0000; } 17% { color: #ff8000; } 33% { color: #ffff00; }
+    50% { color: #00ff00; } 67% { color: #0080ff; } 83% { color: #8000ff; } 100% { color: #ff0000; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+    50% { transform: scale(1.05); box-shadow: 0 0 10px 2px rgba(255,0,0,0.5); }
+  }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 1; } 100% { transform: translateY(-120px) scale(1.2); opacity: 0; } }
+  @keyframes heartRainbow {
+    0% { color: #ff0000; } 20% { color: #ff8000; } 40% { color: #ffff00; }
+    60% { color: #00ff00; } 80% { color: #0080ff; } 100% { color: #ff0000; }
+  }
+
+  .dwm95-container {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background-color: #c0c0c0;
+    background-image:
+      linear-gradient(45deg, #b8b8b8 25%, transparent 25%),
+      linear-gradient(-45deg, #b8b8b8 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #b8c0c0 75%),
+      linear-gradient(-45deg, transparent 75%, #b8b8b8 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+  }
+
+  .win95-window {
+    background: #c0c0c0;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+    margin: 8px;
+  }
+
+  .win95-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    color: white;
+    font-weight: bold;
+    padding: 6px 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .win95-titlebar-text { display: flex; align-items: center; gap: 6px; }
+  .win95-titlebar-btns { display: flex; gap: 2px; }
+  .win95-titlebtn {
+    width: 18px; height: 16px;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; cursor: pointer; color: black; font-weight: bold;
+  }
+  .win95-titlebtn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+    transform: translate(1px, 1px);
+  }
+
+  .win95-content {
+    background: #ffffff;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+    padding: 14px;
+    margin: 4px;
+  }
+
+  .win95-btn {
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+    background: #c0c0c0;
+    color: black;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    outline: none;
+    -webkit-appearance: none;
+    touch-action: manipulation;
+    min-height: 44px;
+  }
+  .win95-btn:hover { background: #d0d0d0; }
+  .win95-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+    transform: translate(1px, 1px);
+  }
+
+  .win95-btn-primary {
+    background: #0000ff;
+    color: white;
+    border-color: #5555ff #000080 #000080 #5555ff;
+  }
+  .win95-btn-primary:hover { background: #2222ff; }
+  .win95-btn-primary:active { border-color: #000080 #5555ff #5555ff #000080; }
+
+  .win95-input {
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+    background: white;
+    color: black;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 8px 12px;
+    width: 100%;
+    outline: none;
+    -webkit-appearance: none;
+    border-radius: 0;
+    min-height: 44px;
+  }
+
+  /* ====== 关键修复：页面切换 ====== */
+  .page {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out, opacity 0.2s ease-out, visibility 0.2s;
+    z-index: 1;
+  }
+  .page.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+    z-index: 10;
+  }
+  .page.prev {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-100%);
+    z-index: 1;
+  }
+
+  .marquee-bar {
+    background: #000080;
+    color: white;
+    font-size: 12px;
+    padding: 6px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    border-bottom: 2px solid #808080;
+  }
+  .marquee-inner {
+    display: inline-block;
+    animation: marquee 12s linear infinite;
+  }
+  .marquee-inner span { margin-right: 40px; }
+
+  .rainbow-text { animation: rainbow 4s linear infinite; font-weight: 900; }
+  .rainbow-heart { animation: heartRainbow 3s linear infinite; }
+
+  .hr-groove {
+    border: none;
+    height: 4px;
+    background: linear-gradient(to bottom, #808080 0%, #808080 50%, #ffffff 50%, #ffffff 100%);
+    margin: 12px 0;
+  }
+
+  .badge-new {
+    display: inline-block;
+    background: #ff0000;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 3px 8px;
+    animation: pulse-glow 1.5s ease-in-out infinite;
+    border: 1px solid #800000;
+  }
+
+  .hit-counter {
+    background: #000000;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
+    padding: 10px 14px;
+    font-family: "Courier New", Courier, monospace;
+    color: #00ff00;
+    font-size: 14px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  .construction-stripes {
+    background: repeating-linear-gradient(45deg, #ffff00, #ffff00 10px, #000000 10px, #000000 20px);
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 13px;
+    color: black;
+    text-shadow: 1px 1px 0 #ffffff;
+  }
+
+  .color-squares {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin: 8px 0;
+  }
+  .color-square {
+    aspect-ratio: 1;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+  }
+
+  .cal-grid-95 {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1px;
+    border: 2px solid #808080;
+    background: #808080;
+  }
+  .cal-day-95 {
+    background: white;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #c0c0c0;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+  }
+  .cal-day-95:hover:not(.disabled):not(.selected) { background: #e8e8e8; }
+  .cal-day-95.disabled { color: #c0c0c0; cursor: not-allowed; background: #f0f0f0; }
+  .cal-day-95.selected { background: #0000ff; color: white; font-weight: bold; }
+  .cal-day-95.label { background: #c0c0c0; font-weight: bold; font-size: 12px; cursor: default; }
+
+  .food-grid-95 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  .food-card-95 {
+    background: #e8e8e8;
+    border: 2px solid;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset -1px -1px 0 #404040, inset 1px 1px 0 #dfdfdf;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    touch-action: manipulation;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .food-card-95:hover { background: #f0f0f0; }
+  .food-card-95.selected {
+    background: #0000ff;
+    color: white;
+    border-color: #000080 #5555ff #5555ff #000080;
+  }
+
+  .modal-overlay-95 {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-overlay-95.show { display: flex; }
+
+  .heart-float-95 {
+    position: absolute;
+    pointer-events: none;
+    animation: floatUp 2s linear forwards;
+    font-size: 20px;
+  }
+
+  .progress-dots-95 {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    padding: 10px;
+    background: #c0c0c0;
+    border-bottom: 2px solid #808080;
+  }
+  .dot-95 {
+    width: 14px; height: 14px;
+    background: #808080;
+    border: 2px solid;
+    border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .dot-95.active {
+    background: #00ff00;
+    border-color: #00aa00 #ffffff #ffffff #00aa00;
+  }
+
+  .success-msg {
+    background: #000000;
+    border: 2px solid;
+    border-color: #00ff00 #ffffff #ffffff #00ff00;
+    padding: 16px;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .success-msg-text {
+    font-family: "Courier New", monospace;
+    color: #00ff00;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  ::selection { background: #000080; color: white; }
+
+  @media (max-width: 480px) {
+    .dwm95-container { border: none; }
+    .win95-content { padding: 12px; margin: 2px; }
+    .win95-btn { padding: 12px 20px; font-size: 15px; }
+    .cal-day-95 { padding: 8px 0; font-size: 14px; min-height: 40px; }
+    .food-card-95 { padding: 16px 12px; font-size: 15px; min-height: 56px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dwm95-container" id="dwm95App">
+
+  <!-- Marquee -->
+  <div class="marquee-bar">
+    <div class="marquee-inner">
+      <span>*** WELCOME TO EAT WITH ME v1.0 ***</span>
+      <span style="color:#ffff00;">BEST VIEWED IN NETSCAPE NAVIGATOR 4.0</span>
+      <span style="color:#00ff00;">INVITE YOUR CRUSH TODAY!</span>
+      <span style="color:#ff0000;">UNDER CONSTRUCTION --- MORE FEATURES COMING SOON</span>
+      <span>*** WELCOME TO EAT WITH ME v1.0 ***</span>
+      <span style="color:#ffff00;">BEST VIEWED IN NETSCAPE NAVIGATOR 4.0</span>
+      <span style="color:#00ff00;">INVITE YOUR CRUSH TODAY!</span>
+      <span style="color:#ff0000;">UNDER CONSTRUCTION --- MORE FEATURES COMING SOON</span>
+    </div>
+  </div>
+
+  <!-- Progress dots -->
+  <div class="progress-dots-95">
+    <div class="dot-95 active" data-page="0"></div>
+    <div class="dot-95" data-page="1"></div>
+    <div class="dot-95" data-page="2"></div>
+    <div class="dot-95" data-page="3"></div>
+  </div>
+
+  <!-- Page 1: Invite -->
+  <div class="page active" data-page="0">
+    <div style="padding: 12px; flex:1; display:flex; flex-direction:column;">
+      <div class="win95-window" style="margin-bottom:8px;">
+        <div class="win95-titlebar">
+          <div class="win95-titlebar-text">🍽️ eatwithme.exe</div>
+          <div class="win95-titlebar-btns">
+            <div class="win95-titlebtn">_</div>
+            <div class="win95-titlebtn">□</div>
+            <div class="win95-titlebtn">×</div>
+          </div>
+        </div>
+        <div class="win95-content" style="text-align:center;">
+          <div class="rainbow-text" style="font-size:28px; margin-bottom:8px; font-family:'Arial Black',Impact,sans-serif;">
+            EAT WITH ME
+          </div>
+          <div class="badge-new" style="margin-bottom:12px;">NEW!</div>
+          <div style="font-size:15px; margin-bottom:16px; line-height:1.6;">
+            <span style="color:#0000ff; font-weight:bold;">JiYi</span> 向你发出吃饭邀约<br><br>
+            <span style="font-size:19px; font-weight:bold;">和我一起吃饭吧！</span>
+          </div>
+          <div class="hit-counter" style="margin-bottom:12px;">
+            > WAITING FOR YOUR YES...
+          </div>
+          <div class="color-squares" style="max-width:200px; margin:0 auto 12px;">
+            <div class="color-square" style="background:#ff0000;"></div>
+            <div class="color-square" style="background:#00ff00;"></div>
+            <div class="color-square" style="background:#0000ff;"></div>
+            <div class="color-square" style="background:#ffff00;"></div>
+            <div class="color-square" style="background:#ff00ff;"></div>
+            <div class="color-square" style="background:#00ffff;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px; align-items:center; margin-top:auto; padding: 0 8px;">
+        <button class="win95-btn win95-btn-primary" style="width:100%; font-size:15px;" onclick="goToPage(1)">
+          ❤️ 我很想！
+        </button>
+        <button class="win95-btn" style="font-size:13px; color:#808080; padding: 8px 16px;" onclick="showModal()">
+          🙈 不了
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page 2: Date & Time -->
+  <div class="page" data-page="1">
+    <div style="padding: 12px; flex:1; display:flex; flex-direction:column;">
+      <div class="win95-window" style="margin-bottom:8px;">
+        <div class="win95-titlebar">
+          <div class="win95-titlebar-text">📅 calendar.exe</div>
+          <div class="win95-titlebar-btns">
+            <div class="win95-titlebtn">_</div>
+            <div class="win95-titlebtn">□</div>
+            <div class="win95-titlebtn">×</div>
+          </div>
+        </div>
+        <div class="win95-content">
+          <div style="font-size:17px; font-weight:bold; margin-bottom:4px; font-family:'Arial Black',Impact,sans-serif;">
+            什么时候见面比较好？
+          </div>
+          <div style="font-size:13px; color:#808080; margin-bottom:12px;">
+            我已经开始期待了💗
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; background:#c0c0c0; padding:6px; border:2px solid; border-color:#808080 #ffffff #ffffff #808080;">
+            <button class="win95-btn" style="padding:4px 10px; font-size:12px;" onclick="changeMonth(-1)">◀</button>
+            <span id="calMonth" style="font-weight:bold; font-size:14px;">2026年7月</span>
+            <button class="win95-btn" style="padding:4px 10px; font-size:12px;" onclick="changeMonth(1)">▶</button>
+          </div>
+          <div class="cal-grid-95" id="calGrid" style="margin-bottom:14px;"></div>
+
+          <div style="font-size:13px; font-weight:bold; margin-bottom:6px;">选择时间:</div>
+          <select class="win95-input" id="timeSelect" style="margin-bottom:14px;">
+            <option value="" disabled selected>-- 选择时间 --</option>
+            <option value="11:30">11:30</option>
+            <option value="12:00">12:00</option>
+            <option value="12:30">12:30</option>
+            <option value="17:30">17:30</option>
+            <option value="18:00">18:00</option>
+            <option value="18:30">18:30</option>
+            <option value="19:00">19:00</option>
+            <option value="19:30">19:30</option>
+            <option value="20:00">20:00</option>
+            <option value="20:30">20:30</option>
+            <option value="21:00">21:00</option>
+          </select>
+
+          <button class="win95-btn win95-btn-primary" style="width:100%;" onclick="validatePage2()">Continue ▶</button>
+        </div>
+      </div>
+      <button class="win95-btn" style="align-self:flex-start; margin-top:4px; margin-left:8px;" onclick="goToPage(0)">◀ Back</button>
+    </div>
+  </div>
+
+  <!-- Page 3: Food -->
+  <div class="page" data-page="2">
+    <div style="padding: 12px; flex:1; display:flex; flex-direction:column;">
+      <div class="win95-window" style="margin-bottom:8px;">
+        <div class="win95-titlebar">
+          <div class="win95-titlebar-text">🍜 food.exe</div>
+          <div class="win95-titlebar-btns">
+            <div class="win95-titlebtn">_</div>
+            <div class="win95-titlebtn">□</div>
+            <div class="win95-titlebtn">×</div>
+          </div>
+        </div>
+        <div class="win95-content">
+          <div style="font-size:17px; font-weight:bold; margin-bottom:4px; font-family:'Arial Black',Impact,sans-serif;">
+            我们吃什么好呢？
+          </div>
+          <div style="font-size:13px; color:#808080; margin-bottom:14px;">
+            你先选，但决定权肯定还是在我😝
+          </div>
+
+          <div class="food-grid-95" id="foodGrid">
+            <div class="food-card-95" data-food="烤肉" onclick="selectFood(this)">🥩 烤肉</div>
+            <div class="food-card-95" data-food="火锅" onclick="selectFood(this)">🍲 火锅</div>
+            <div class="food-card-95" data-food="日料" onclick="selectFood(this)">🍣 日料</div>
+            <div class="food-card-95" data-food="韩料" onclick="selectFood(this)">🍗 韩料</div>
+            <div class="food-card-95" data-food="泰国菜" onclick="selectFood(this)">🇹🇭 泰国菜</div>
+            <div class="food-card-95" data-food="烧烤" onclick="selectFood(this)">🍢 烧烤</div>
+            <div class="food-card-95" data-food="垃圾脏摊" onclick="selectFood(this)">🪑 垃圾脏摊</div>
+            <div class="food-card-95" data-food="other" onclick="selectFood(this)">✨ 我想吃别的</div>
+          </div>
+
+          <input type="text" class="win95-input" id="customFoodInput" placeholder="告诉我你最想吃什么～" style="display:none; margin-top:10px;">
+
+          <button class="win95-btn win95-btn-primary" style="width:100%; margin-top:14px;" onclick="validatePage3()">Continue ▶</button>
+        </div>
+      </div>
+      <button class="win95-btn" style="align-self:flex-start; margin-top:4px; margin-left:8px;" onclick="goToPage(1)">◀ Back</button>
+    </div>
+  </div>
+
+  <!-- Page 4: Result -->
+  <div class="page" data-page="3">
+    <div style="padding: 12px; flex:1; display:flex; flex-direction:column;">
+      <div class="win95-window" style="margin-bottom:8px;">
+        <div class="win95-titlebar">
+          <div class="win95-titlebar-text">❤️ result.exe</div>
+          <div class="win95-titlebar-btns">
+            <div class="win95-titlebtn">_</div>
+            <div class="win95-titlebtn">□</div>
+            <div class="win95-titlebtn">×</div>
+          </div>
+        </div>
+        <div class="win95-content" style="text-align:center;">
+          <div class="rainbow-heart" style="font-size:32px; margin-bottom:8px; font-family:'Arial Black',Impact,sans-serif;">
+            ❤️ 约饭邀约已生成 ❤️
+          </div>
+          <div class="hr-groove"></div>
+
+          <div id="formspreeMsg"></div>
+
+          <div style="background:#000000; border:2px solid; border-color:#808080 #ffffff #ffffff #808080; padding:14px; margin-bottom:14px;">
+            <div style="font-family:'Courier New',monospace; color:#00ff00; font-size:15px; text-align:left; line-height:1.8;">
+              <span style="color:#808080;">DATE:</span> <span id="resDate" style="color:#ffff00;">--</span><br>
+              <span style="color:#808080;">TIME:</span> <span id="resTime" style="color:#00ff00;">--</span><br>
+              <span style="color:#808080;">FOOD:</span> <span id="resFood" style="color:#ff0000;">--</span><br>
+              <span style="color:#808080;">STATUS:</span> <span id="resStatus" style="color:#00ff00;">PENDING...</span>
+            </div>
+          </div>
+
+          <div class="construction-stripes" style="margin-bottom:14px;">
+            约饭已经进入倒计时，按时出现吧，不要🐦 🍽️✨
+          </div>
+
+          <button class="win95-btn win95-btn-primary" style="width:100%; font-size:15px;" id="confirmBtn" onclick="submitToServerChan()">
+            确认约饭 [OK]
+          </button>
+        </div>
+      </div>
+
+      <div class="win95-window" style="margin-top:auto;">
+        <div class="win95-titlebar" style="background:linear-gradient(to right,#800000,#ff0000);">
+          <div class="win95-titlebar-text">📢 公告</div>
+        </div>
+        <div class="win95-content" style="font-size:13px; text-align:center;">
+          <span style="color:#808080; font-size:12px;">Eat With Me v1.0 | Made with ❤️ by JiYi</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay-95" id="rejectModal" onclick="if(event.target===this)hideModal()">
+    <div class="win95-window" style="max-width:300px; width:100%;">
+      <div class="win95-titlebar" style="background:linear-gradient(to right,#800000,#ff0000);">
+        <div class="win95-titlebar-text">⚠️ 系统提示</div>
+        <div class="win95-titlebar-btns">
+          <div class="win95-titlebtn" onclick="hideModal()">×</div>
+        </div>
+      </div>
+      <div class="win95-content" style="text-align:center;">
+        <div style="font-size:36px; margin-bottom:10px;">🥺</div>
+        <div style="font-size:15px; font-weight:bold; margin-bottom:18px;">
+          真的不再考虑一下吗？
+        </div>
+        <button class="win95-btn win95-btn-primary" style="width:100%;" onclick="hideModal()">再想想 [OK]</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SERVERCHAN_KEY = 'SCT378163TnIFd4bCwipYhTrXIWCS9wtyg'; // Server 酱 SendKey
+
+  let currentPage = 0;
+  let selectedDate = null;
+  let selectedTime = null;
+  let selectedFood = null;
+  let customFood = '';
+  let currentMonth = new Date(2026, 6, 1);
+  const today = new Date(2026, 6, 12);
+  let isSubmitting = false;
+
+  function goToPage(n) {
+    const pages = document.querySelectorAll('.page');
+    const dots = document.querySelectorAll('.dot-95');
+
+    // 当前页面移除active，添加prev（向左滑出）
+    pages[currentPage].classList.remove('active');
+    pages[currentPage].classList.add('prev');
+
+    // 目标页面移除prev（如果有），准备进入
+    pages[n].classList.remove('prev');
+
+    // 使用 requestAnimationFrame 确保浏览器完成上一帧渲染
+    requestAnimationFrame(() => {
+      currentPage = n;
+      pages[currentPage].classList.add('active');
+      dots.forEach((d, i) => d.classList.toggle('active', i === currentPage));
+      if (currentPage === 3) renderResult();
+    });
+  }
+
+  function showModal() { document.getElementById('rejectModal').classList.add('show'); }
+  function hideModal() { document.getElementById('rejectModal').classList.remove('show'); }
+
+  function changeMonth(delta) {
+    currentMonth.setMonth(currentMonth.getMonth() + delta);
+    renderCalendar();
+  }
+
+  function renderCalendar() {
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const monthNames = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+    document.getElementById('calMonth').textContent = year + '年' + monthNames[month];
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    const days = ['日','一','二','三','四','五','六'];
+    days.forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-day-95 label';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let i = 0; i < firstDay; i++) grid.appendChild(document.createElement('div'));
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(year, month, d);
+      const el = document.createElement('div');
+      el.className = 'cal-day-95';
+      el.textContent = d;
+      const isDisabled = date < new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      if (isDisabled) el.classList.add('disabled');
+      if (selectedDate && date.toDateString() === selectedDate.toDateString()) el.classList.add('selected');
+      if (!isDisabled) {
+        el.onclick = () => {
+          document.querySelectorAll('.cal-day-95.selected').forEach(x => x.classList.remove('selected'));
+          el.classList.add('selected');
+          selectedDate = date;
+        };
+      }
+      grid.appendChild(el);
+    }
+  }
+
+  function selectFood(el) {
+    document.querySelectorAll('.food-card-95').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedFood = el.dataset.food;
+    const input = document.getElementById('customFoodInput');
+    if (selectedFood === 'other') { input.style.display = 'block'; input.focus(); }
+    else { input.style.display = 'none'; customFood = ''; }
+  }
+
+  function validatePage2() {
+    selectedTime = document.getElementById('timeSelect').value;
+    if (!selectedDate) { alert('ERROR: 请选择日期'); return; }
+    if (!selectedTime) { alert('ERROR: 请选择时间'); return; }
+    goToPage(2);
+  }
+
+  function validatePage3() {
+    if (!selectedFood) { alert('ERROR: 请选择想吃什么'); return; }
+    if (selectedFood === 'other') {
+      customFood = document.getElementById('customFoodInput').value.trim();
+      if (!customFood) { alert('ERROR: 请告诉我你想吃什么～'); return; }
+    }
+    goToPage(3);
+  }
+
+  function renderResult() {
+    const m = selectedDate.getMonth() + 1;
+    const d = selectedDate.getDate();
+    document.getElementById('resDate').textContent = m + '月' + d + '日';
+    document.getElementById('resTime').textContent = selectedTime;
+    document.getElementById('resFood').textContent = selectedFood === 'other' ? customFood : selectedFood;
+  }
+
+  async function submitToServerChan() {
+    if (isSubmitting) return;
+
+    isSubmitting = true;
+    const btn = document.getElementById('confirmBtn');
+    btn.textContent = '发送中...';
+    btn.style.opacity = '0.6';
+
+    const food = selectedFood === 'other' ? customFood : selectedFood;
+    const dateStr = (selectedDate.getMonth() + 1) + '月' + selectedDate.getDate() + '日';
+    const title = '有人接受了你的约饭邀请！';
+    const desp = '**日期：** ' + dateStr + '\n\n**时间：** ' + selectedTime + '\n\n**吃什么：** ' + food + '\n\n来自 Eat With Me 约饭页面';
+
+    try {
+      const response = await fetch('https://sctapi.ftqq.com/' + SERVERCHAN_KEY + '.send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: title, desp: desp })
+      });
+      const data = await response.json();
+      if (data.code === 0 || data.code === 200) {
+        document.getElementById('resStatus').textContent = 'CONFIRMED ✓';
+        document.getElementById('formspreeMsg').innerHTML = '<div class="success-msg"><div class="success-msg-text">✓ 约饭邀请已发送！去微信查看通知吧～</div></div>';
+        btn.textContent = '已发送 ✓'; btn.disabled = true;
+        spawnHearts();
+      } else { throw new Error(data.msg || '发送失败'); }
+    } catch (err) {
+      alert('发送失败：' + err.message + '\n请检查网络或 SendKey');
+      btn.textContent = '确认约饭 [重试]'; btn.style.opacity = '1'; isSubmitting = false;
+    }
+  }
+
+  function spawnHearts() {
+    const container = document.getElementById('dwm95App');
+    for (let i = 0; i < 15; i++) {
+      setTimeout(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart-float-95 rainbow-heart';
+        heart.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random()*4)];
+        heart.style.left = (15 + Math.random() * 70) + '%';
+        heart.style.bottom = '25%';
+        heart.style.fontSize = (16 + Math.random() * 20) + 'px';
+        container.appendChild(heart);
+        setTimeout(() => heart.remove(), 2000);
+      }, i * 120);
+    }
+  }
+
+  renderCalendar();
+</script>
+
+</body>
+</html>
